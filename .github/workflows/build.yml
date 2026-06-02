@@ -1,0 +1,36 @@
+name: Build Windows App
+
+# This tells the robot to run every time you upload a file
+on: [push]
+
+jobs:
+  build:
+    # This is where we request a free Windows computer!
+    runs-on: windows-latest
+
+    steps:
+    # 1. Grab your app.py file
+    - uses: actions/checkout@v3
+
+    # 2. Install Python on the Windows server
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    # 3. Install Flask and PyInstaller
+    - name: Install Requirements
+      run: |
+        python -m pip install --upgrade pip
+        pip install flask pyinstaller
+
+    # 4. Convert app.py to a Windows .exe
+    - name: Build EXE
+      run: pyinstaller --onefile app.py
+
+    # 5. Save the final .exe so you can download it
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ECHR_Windows_Start
+        path: dist/app.exe
